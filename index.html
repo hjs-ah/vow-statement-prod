@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VOW Center — Giving Statement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --deep: #0e1a30;
+      --gold: #c9a84c;
+      --gold-light: #e8c87a;
+      --cream: #f8f5ef;
+      --white: #ffffff;
+      --muted: #6b7280;
+      --border: #d6cfc3;
+      --success: #2d7a4f;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 1rem 4rem;
+    }
+
+    /* Header */
+    .header {
+      width: 100%;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-wrap {
+      background: var(--navy);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    .logo-wrap img {
+      height: 72px;
+      display: block;
+      filter: brightness(1);
+    }
+
+    .header-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* Card */
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 32px rgba(26,39,68,0.10), 0 1px 4px rgba(26,39,68,0.06);
+      width: 100%;
+      max-width: 580px;
+      padding: 2.5rem 2.5rem 2rem;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      display: block;
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--navy), var(--gold));
+      position: absolute;
+      top: 0; left: 0;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 0.45rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--navy);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      appearance: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(26,39,68,0.08);
+    }
+
+    input::placeholder {
+      color: #b0aaa0;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .amount-wrap {
+      position: relative;
+    }
+
+    .amount-wrap span {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .amount-wrap input {
+      padding-left: 1.75rem;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.75rem 0;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.85rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--navy);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(26,39,68,0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--deep);
+      box-shadow: 0 4px 16px rgba(26,39,68,0.30);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(201,168,76,0.30);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-light);
+      box-shadow: 0 4px 16px rgba(201,168,76,0.38);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+    }
+
+    .btn-outline:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--navy);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(26,39,68,0.3);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: #c0392b; }
+
+    /* Disclosure */
+    .disclosure {
+      margin-top: 1.75rem;
+      padding: 1rem 1.1rem;
+      background: #f0ede7;
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+    }
+
+    .disclosure p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .disclosure strong {
+      color: var(--navy);
+    }
+
+    /* Email modal */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(14,26,48,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 16px 48px rgba(14,26,48,0.35);
+    }
+
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .modal p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .modal .form-group { margin-bottom: 1rem; }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .modal-actions .btn { flex: 1; }
+
+    /* Clear btn */
+    .btn-clear {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.2s;
+    }
+
+    .btn-clear:hover { color: #c0392b; }
+
+    @media (max-width: 480px) {
+      .card { padding: 2rem 1.25rem 1.5rem; }
+      .input-row { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <img src="vow-logo.png" alt="VOW Center — Verity Outreach Worship Center" />
+  </div>
+  <span class="header-subtitle">Giving Statement Portal</span>
+</header>
+
+<main class="card">
+  <h1 class="card-title">Annual Giving Statement</h1>
+  <p class="card-desc">Enter your information below to generate a personalized giving statement for your records or tax purposes.</p>
+
+  <form id="givingForm" novalidate>
+
+    <div class="form-group">
+      <label for="patronName">Full Name</label>
+      <input type="text" id="patronName" placeholder="e.g. John & Jane Smith" autocomplete="name" required />
+    </div>
+
+    <div class="form-group">
+      <label for="emailAddress">Email Address</label>
+      <input type="email" id="emailAddress" placeholder="you@example.com" autocomplete="email" required />
+    </div>
+
+    <div class="input-row">
+      <div class="form-group">
+        <label for="fiscalYear">Fiscal Year</label>
+        <select id="fiscalYear" required>
+          <option value="">Select year…</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="amountGiven">Total Amount Given</label>
+        <div class="amount-wrap">
+          <span>$</span>
+          <input type="number" id="amountGiven" placeholder="0.00" min="0" step="0.01" required />
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="actions">
+      <button type="button" class="btn btn-primary" onclick="generatePDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Generate PDF
+      </button>
+      <button type="button" class="btn btn-gold" onclick="openEmailModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Summary
+      </button>
+    </div>
+
+    <button type="button" class="btn-clear" onclick="clearForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.7L1 10"/></svg>
+      Clear form
+    </button>
+
+  </form>
+
+  <div class="disclosure">
+    <p>
+      <strong>Privacy Notice:</strong> This form is session-only. No data is stored, saved to a database, or retained after you close this page.
+      Your giving information is used solely to generate the statement you request.
+      VOW Center (Verity Outreach Worship Center) is a 501(c)(3) nonprofit organization.
+      This statement is provided for your personal records. Please retain it for tax purposes.
+    </p>
+  </div>
+</main>
+
+<!-- Email Modal -->
+<div class="overlay" id="emailOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <h3>Send Summary by Email</h3>
+    <p>We'll compose a pre-filled email with your giving summary. Your email client will open so you can review and send.</p>
+
+    <div class="form-group">
+      <label for="sendToEmail">Send To</label>
+      <input type="email" id="sendToEmail" placeholder="recipient@example.com" />
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeOverlay()">Cancel</button>
+      <button class="btn btn-gold" onclick="sendEmail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Open Mail
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── Helpers ───────────────────────────────────────────────────────────────
+
+  function getFields() {
+    return {
+      name: document.getElementById('patronName').value.trim(),
+      email: document.getElementById('emailAddress').value.trim(),
+      year: document.getElementById('fiscalYear').value,
+      amount: parseFloat(document.getElementById('amountGiven').value || 0)
+    };
+  }
+
+  function validate() {
+    const f = getFields();
+    if (!f.name)   { showToast('Please enter a full name.', 'error'); return false; }
+    if (!f.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) {
+      showToast('Please enter a valid email address.', 'error'); return false;
+    }
+    if (!f.year)   { showToast('Please select a fiscal year.', 'error'); return false; }
+    if (!f.amount || f.amount <= 0) { showToast('Please enter a valid amount given.', 'error'); return false; }
+    return true;
+  }
+
+  function fmtMoney(n) {
+    return n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function clearForm() {
+    document.getElementById('givingForm').reset();
+    showToast('Form cleared.');
+  }
+
+  // ─── PDF Generation ────────────────────────────────────────────────────────
+
+  function generatePDF() {
+    if (!validate()) return;
+    const f = getFields();
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+    const pageW = 612, pageH = 792;
+    const mar = 60;
+
+    // Header bar (navy)
+    doc.setFillColor(26, 39, 68);
+    doc.rect(0, 0, pageW, 110, 'F');
+
+    // Gold accent stripe
+    doc.setFillColor(201, 168, 76);
+    doc.rect(0, 110, pageW, 4, 'F');
+
+    // Logo text (white) — since we can't easily embed the PNG in jsPDF without
+    // canvas, we render the org name elegantly
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.text('VERITY OUTREACH WORSHIP CENTER', pageW / 2, 55, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(201, 168, 76);
+    doc.setCharSpace(3);
+    doc.text('VOW CENTER  ·  PHILADELPHIA, PA  ·  501(c)(3) NONPROFIT', pageW / 2, 78, { align: 'center' });
+    doc.setCharSpace(0);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Annual Giving Statement', pageW / 2, 98, { align: 'center' });
+
+    // Main content area
+    const bodyTop = 145;
+
+    // Statement title
+    doc.setTextColor(26, 39, 68);
+    doc.setFont('times', 'bold');
+    doc.setFontSize(20);
+    doc.text(`Giving Statement — ${f.year}`, mar, bodyTop);
+
+    // Divider
+    doc.setDrawColor(201, 168, 76);
+    doc.setLineWidth(1);
+    doc.line(mar, bodyTop + 12, pageW - mar, bodyTop + 12);
+
+    // Date generated
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    doc.text(`Generated: ${today}`, pageW - mar, bodyTop + 8, { align: 'right' });
+
+    // Donor info box
+    const boxTop = bodyTop + 30;
+    doc.setFillColor(248, 245, 239);
+    doc.setDrawColor(214, 207, 195);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(mar, boxTop, pageW - mar * 2, 80, 4, 4, 'FD');
+
+    doc.setFontSize(8);
+    doc.setTextColor(120, 110, 100);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DONOR INFORMATION', mar + 16, boxTop + 20);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.setTextColor(26, 39, 68);
+    doc.text(f.name, mar + 16, boxTop + 38);
+
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80);
+    doc.text(f.email, mar + 16, boxTop + 55);
+    doc.text(`Fiscal Year: ${f.year}`, mar + 16, boxTop + 70);
+
+    // Gift summary table
+    const tableTop = boxTop + 105;
+
+    doc.setFillColor(26, 39, 68);
+    doc.rect(mar, tableTop, pageW - mar * 2, 26, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.text('DESCRIPTION', mar + 14, tableTop + 17);
+    doc.text('AMOUNT', pageW - mar - 14, tableTop + 17, { align: 'right' });
+
+    // Row
+    const rowY = tableTop + 26;
+    doc.setFillColor(255, 255, 255);
+    doc.rect(mar, rowY, pageW - mar * 2, 30, 'F');
+    doc.setDrawColor(214, 207, 195);
+    doc.setLineWidth(0.5);
+    doc.rect(mar, rowY, pageW - mar * 2, 30);
+    doc.setTextColor(26, 39, 68);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10.5);
+    doc.text(`Total Charitable Contributions — ${f.year}`, mar + 14, rowY + 19);
+    doc.setFont('helvetica', 'bold');
+    doc.text(fmtMoney(f.amount), pageW - mar - 14, rowY + 19, { align: 'right' });
+
+    // Total bar
+    const totY = rowY + 30;
+    doc.setFillColor(201, 168, 76);
+    doc.rect(mar, totY, pageW - mar * 2, 30, 'F');
+    doc.setTextColor(26, 39, 68);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('TOTAL GIVEN', mar + 14, totY + 20);
+    doc.setFontSize(13);
+    doc.text(fmtMoney(f.amount), pageW - mar - 14, totY + 20, { align: 'right' });
+
+    // Tax note
+    const noteTop = totY + 55;
+    doc.setFillColor(240, 237, 231);
+    doc.setDrawColor(201, 168, 76);
+    doc.setLineWidth(2);
+    doc.line(mar, noteTop, mar, noteTop + 60);
+    doc.setLineWidth(0.5);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(26, 39, 68);
+    doc.text('TAX DEDUCTIBILITY NOTICE', mar + 12, noteTop + 14);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(80, 80, 80);
+    const noteTxt = 'Verity Outreach Worship Center (VOW Center) is a recognized 501(c)(3) nonprofit organization. No goods or services were provided in exchange for your contributions. Please retain this statement for tax purposes.';
+    const wrapped = doc.splitTextToSize(noteTxt, pageW - mar * 2 - 20);
+    doc.text(wrapped, mar + 12, noteTop + 28);
+
+    // Footer
+    doc.setFillColor(26, 39, 68);
+    doc.rect(0, pageH - 50, pageW, 50, 'F');
+    doc.setTextColor(201, 168, 76);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setCharSpace(1.5);
+    doc.text('VERITY OUTREACH WORSHIP CENTER  ·  PHILADELPHIA, PA', pageW / 2, pageH - 30, { align: 'center' });
+    doc.setCharSpace(0);
+    doc.setTextColor(150, 160, 180);
+    doc.setFontSize(7.5);
+    doc.text('This is a session-generated statement. No data is retained by this application.', pageW / 2, pageH - 15, { align: 'center' });
+
+    doc.save(`VOW_Giving_Statement_${f.year}_${f.name.replace(/\s+/g, '_')}.pdf`);
+    showToast('✓ PDF downloaded successfully!', 'success');
+  }
+
+  // ─── Email ─────────────────────────────────────────────────────────────────
+
+  function openEmailModal() {
+    if (!validate()) return;
+    const f = getFields();
+    document.getElementById('sendToEmail').value = f.email;
+    document.getElementById('emailOverlay').classList.add('open');
+  }
+
+  function closeOverlay() {
+    document.getElementById('emailOverlay').classList.remove('open');
+  }
+
+  function closeModal(e) {
+    if (e.target.id === 'emailOverlay') closeOverlay();
+  }
+
+  function sendEmail() {
+    const f = getFields();
+    const recipient = document.getElementById('sendToEmail').value.trim();
+    if (!recipient || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+      showToast('Please enter a valid recipient email.', 'error');
+      return;
+    }
+
+    const subject = encodeURIComponent(`VOW Center Giving Statement — ${f.year}`);
+    const body = encodeURIComponent(
+`Dear ${f.name},
+
+Thank you for your generous support of Verity Outreach Worship Center (VOW Center).
+
+Below is your giving summary for the ${f.year} fiscal year:
+
+──────────────────────────────
+  Donor Name:    ${f.name}
+  Email:         ${f.email}
+  Fiscal Year:   ${f.year}
+  Total Given:   ${fmtMoney(f.amount)}
+──────────────────────────────
+
+VOW Center is a recognized 501(c)(3) nonprofit organization. No goods or services were provided in exchange for your contributions. Please retain this for your records and tax purposes.
+
+With gratitude,
+VOW Center — Verity Outreach Worship Center
+Philadelphia, PA
+
+---
+This summary was generated on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.
+No data was stored or retained by this application.`
+    );
+
+    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    closeOverlay();
+    showToast('✓ Opening your mail client…', 'success');
+  }
+</script>
+</body>
+</html>
